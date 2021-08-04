@@ -27,9 +27,9 @@ class hbase_metrics:
         print("Printing Metrics to file")
 
         for metric in fetch_metrics("http://" + str(hostname)):
-            # print("Printing METRIC:" + str(metric['metric']) + ": " + str(metric['value']))
+            print("Printing METRIC:" + str(metric['metric']) + ": " + str(metric['value']))
             f = open(file_name, "a")
-            f.write(str(metric['metric']) + "\n")
+            f.write(str(metric['metric']) + "|" + str(hostname.split(":")[1]) + "\n")
             f.close()
 
     def fetch_and_push_metrics(self, hostname):

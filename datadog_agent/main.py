@@ -42,7 +42,12 @@ for hostname in list_hostnames:
         obj_hbase_metrics = hbase_metrics(list_metrics)
         obj_hbase_metrics.initialize()
         obj_hbase_metrics.service_check()
-        obj_hbase_metrics.fetch_and_append_metrics(hostname, file_name)
+
+        if str_is_master:
+            obj_hbase_metrics.fetch_and_append_metrics(hostname, file_name + "_master")
+        else:
+            obj_hbase_metrics.fetch_and_append_metrics(hostname, file_name + "_region")
+
         obj_hbase_metrics.fetch_and_push_metrics(hostname)
     except Exception as e:
         print("Exception in fetching or pushing metrics: " + str(e))
