@@ -25,7 +25,7 @@ str_local_ip = get_local_ip()
 print("Node is master node: " + str(str_is_master))
 print("Local IP: " + str(str_local_ip))
 
-file_name = "list_of_metrics"
+file_name = "/tmp/" + "list_of_metrics"
 create_file(file_name)
 
 for hostname in list_hostnames:
