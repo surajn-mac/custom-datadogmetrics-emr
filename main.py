@@ -20,6 +20,7 @@ def fetch_ip_address(cluster_id):
 
 
 def ssh_and_update_cron(list_ips, cluster_id):
+    logging.info("===== ssh_and_update_cron =====" )
     logging.info("EMR IP list: " + str(list_ips))
 
     for i in list_ips:
@@ -29,7 +30,7 @@ def ssh_and_update_cron(list_ips, cluster_id):
         # ssh_cron_command = ' ssh ec2-user@172.30.138.8 "sudo bash -c \'ls / \' " '
         # ssh_cron_command = ' ssh ec2-user@' + i +' "sudo bash -c \'ifconfig \' " '
         ssh_cron_command = 'ssh ec2-user@' + i + ' "sudo bash -c \'touch /etc/cron.d/datadog-metrics; echo \\\"* * * * * root cd /efs/users/datadog_agent/; /usr/bin/python3 /efs/users/datadog_agent/main.py ' + cluster_id + ' / >> /tmp/datadog-metrics.log 2>&1\\\" >  /etc/cron.d/datadog-metrics; \'"'
-
+        logging.info("SSH command " + ssh_cron_command)
         # Create a file with the command, and then try to execute the file
         f = open("ssh-configure-cron.sh", "w")
         f.write(
@@ -55,6 +56,8 @@ def ssh_and_update_cron(list_ips, cluster_id):
 
 def configure_ssh_in_emr(cluster_id):
     # Get all IP Addresses of a certain EMR Cluster
+    logging.info("===== configure_ssh_in_emr =====" )
+    logging.info("Cluster Id: " + str(cluster_id))
     list_ips = fetch_ip_address(cluster_id)
 
     # SSH into every IP Address and Add or Update the Cronfile
@@ -70,3 +73,4 @@ try:
     configure_ssh_in_emr(cluster_id)
 except Exception as e:
     print(str(e))
+    logging.info("Error: " + str(e))
