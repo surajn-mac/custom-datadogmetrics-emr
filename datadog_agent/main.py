@@ -14,21 +14,21 @@ config.read('config.ini')
 
 list_metrics = list(config.items('metrics'))
 list_metrics = [i[0] for i in list_metrics]
-print("Metrics: ")
-print(list_metrics)
+#print("Metrics: ")
+#print(list_metrics)
 logging.info("Metrics: "+ str(list_metrics))
 
 list_hostnames = list(config.items('jmx_hostnames'))
 list_hostnames = [i[0] for i in list_hostnames]
-print("Hostnames:")
-print(list_hostnames)
+#print("Hostnames:")
+#print(list_hostnames)
 logging.info("Hostnames: "+ str(list_metrics))
 
 str_is_master = identify_master_node()
 str_local_ip = get_local_ip()
 
-print("Node is master node: " + str(str_is_master))
-print("Local IP: " + str(str_local_ip))
+#print("Node is master node: " + str(str_is_master))
+#print("Local IP: " + str(str_local_ip))
 logging.info("Node is master node: " + str(str_is_master))
 logging.info("Local IP: " + str(str_local_ip))
 
@@ -44,7 +44,7 @@ for hostname in list_hostnames:
                 hostname = hostname.split(":")[0] + str(":16030")
 
         hostname = str_local_ip + ":" + hostname.split(":")[1]
-        print("Hostname to be passed: " + hostname)
+        #print("Hostname to be passed: " + hostname)
         logging.info("Hostname to be passed: " + hostname)
 
         obj_hbase_metrics = hbase_metrics(list_metrics)
@@ -58,14 +58,14 @@ for hostname in list_hostnames:
 
         obj_hbase_metrics.fetch_and_push_metrics(hostname)
     except Exception as e:
-        print("Exception in fetching or pushing metrics: " + str(e))
+        #print("Exception in fetching or pushing metrics: " + str(e))
         logging.info("Exception in fetching or pushing metrics: " + str(e))
 
 # S3 metrics
 list_tables = list(config.items('tables'))
 list_tables = [i[0] for i in list_tables]
-print("Tables")
-print(list_tables)
+#print("Tables")
+#print(list_tables)
 logging.info("Tables: "+ str(list_tables))
 
 if str_is_master:
@@ -73,7 +73,7 @@ if str_is_master:
     prefix = config['s3_metrics']['prefix']
     tag = config['s3_metrics']['tag']
 
-    print("Pushing S3 Metrics: " + "Bucket name: " + bucket_name + " Prefix: " + prefix + "Tag: " + tag)
+    #print("Pushing S3 Metrics: " + "Bucket name: " + bucket_name + " Prefix: " + prefix + "Tag: " + tag)
     logging.info("Pushing S3 Metrics: " + "Bucket name: " + bucket_name + " Prefix: " + prefix + "Tag: " + tag)
 
     try:
@@ -82,7 +82,7 @@ if str_is_master:
         obj_s3_metrics.connect()
         obj_s3_metrics.fetch_and_push_metrics(bucket_name, prefix, tag, list_tables)
     except Exception as e:
-        print(str(e))
+        #print(str(e))
         logging.info("Error: "+ str(e))
 
 #
