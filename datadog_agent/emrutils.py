@@ -12,7 +12,7 @@ def identify_master_node():
     str_instance_details = f.read()
     json_instance_details = json.loads(str_instance_details)
     str_is_master = json_instance_details["isMaster"]
-    logging.info("master node check: "+str_is_master)
+    logging.info("master node check: "+str(str_is_master))
     return str_is_master
 
 
