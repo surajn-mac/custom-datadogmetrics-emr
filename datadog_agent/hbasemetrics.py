@@ -30,7 +30,7 @@ class hbase_metrics:
         logging.info("===== fetch_and_append_metrics =====")
 
         for metric in fetch_metrics("http://" + str(hostname)):
-            print("Printing METRIC:" + str(metric['metric']) + ": " + str(metric['value']))
+            #print("Printing METRIC:" + str(metric['metric']) + ": " + str(metric['value']))
             logging.info("Printing METRIC:" + str(metric['metric']) + ": " + str(metric['value']))
             f = open(file_name, "a")
             f.write(str(metric['metric']) + "|" + str(hostname.split(":")[1]) + "\n")
