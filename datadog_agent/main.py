@@ -18,6 +18,18 @@ list_metrics = [i[0] for i in list_metrics]
 #print(list_metrics)
 logging.info("Metrics: "+ str(list_metrics))
 
+list_tables = [table[0] for table in config.items('tables')]
+logging.info("Tables: " + str(list_tables))
+list_renamed_metrics = [metric[1].replace('${tables}', table).lower()
+                        for metric in config.items('renamed_metrics') for table in list_tables]
+logging.info("Renamed Metrics: " + str(list_renamed_metrics))
+dict_renamed_metric_names = {metric[1].replace('${tables}', table).lower():metric[0].lower()
+                             for metric in config.items('renamed_metrics') for table in list_tables}
+logging.info("Renamed Metric Names: " + str(dict_renamed_metric_names))
+dict_renamed_metric_tables = {metric[1].replace('${tables}', table).lower():table
+                             for metric in config.items('renamed_metrics') for table in list_tables}
+logging.info("Renamed Metric Tables: " + str(dict_renamed_metric_tables))
+
 list_hostnames = list(config.items('jmx_hostnames'))
 list_hostnames = [i[0] for i in list_hostnames]
 #print("Hostnames:")
@@ -57,6 +69,13 @@ for hostname in list_hostnames:
             obj_hbase_metrics.fetch_and_append_metrics(hostname, file_name + "_region")
 
         obj_hbase_metrics.fetch_and_push_metrics(hostname)
+
+        obj_hbase_renamed_metrics = hbase_metrics(list_renamed_metrics)
+        obj_hbase_renamed_metrics.initialize()
+        obj_hbase_renamed_metrics.service_check()
+        obj_hbase_renamed_metrics.fetch_and_push_renamed_metrics(hostname, dict_renamed_metric_names,
+                                                                 dict_renamed_metric_tables)
+
     except Exception as e:
         #print("Exception in fetching or pushing metrics: " + str(e))
         logging.info("Exception in fetching or pushing metrics: " + str(e))

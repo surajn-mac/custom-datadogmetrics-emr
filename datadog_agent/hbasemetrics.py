@@ -45,3 +45,17 @@ class hbase_metrics:
                 logging.info("Pushing METRIC:" + str(metric['metric']) + ": " + str(metric['value']))
                 statsd.gauge(metric['metric'], metric['value'],
                              ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()])
+
+    def fetch_and_push_renamed_metrics(self, hostname, dict_renamed_metric_names, dict_renamed_metric_tables):
+        print("Pushing renamed metrics")
+        logging.info("===== fetch_and_push_renamed_metrics =====")
+        for metric in fetch_metrics("http://" + str(hostname)):
+            if str(metric['metric']).lower() in self.list_metrics:
+                print("Pushing METRIC:" + str(metric['metric']) + " as "
+                      + dict_renamed_metric_names[str(metric['metric']).lower()] + ": " + str(metric['value']))
+                logging.info("Pushing METRIC:" + str(metric['metric']) + " as "
+                             + dict_renamed_metric_names[str(metric['metric']).lower()] + ": " + str(metric['value']))
+                statsd.gauge(dict_renamed_metric_names[str(metric['metric']).lower()], metric['value'],
+                             ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()]
+                             + ["hbasetable:"+dict_renamed_metric_tables[str(metric['metric']).lower()]]
+                             + ["flipboardemrprod"])
