@@ -42,7 +42,7 @@ class s3_metrics:
                 print("Exception when calculating size of tables: " + str(e))
                 logging.info("Error: "+ str(e))
                 size = 0
-            print("Pushing metric: " + str(i) + " Size:" + str(size) + " Count:" + str(count))
-            logging.info("Pushing metric: " + str(i) + " Size:" + str(size) + " Count:" + str(count))
+            # print("Pushing metric: " + str(i) + " Size:" + str(size) + " Count:" + str(count))
+            # logging.info("Pushing metric: " + str(i) + " Size:" + str(size) + " Count:" + str(count))
             statsd.gauge('aws_s3.tablesize', size, tags=[tag, "table:" + i])
             statsd.gauge('aws_s3.num_of_objects_in_table', count, tags=[tag, "table:" + i])

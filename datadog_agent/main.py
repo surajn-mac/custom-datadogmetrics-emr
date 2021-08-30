@@ -16,10 +16,10 @@ list_metrics = list(config.items('metrics'))
 list_metrics = [i[0] for i in list_metrics]
 #print("Metrics: ")
 #print(list_metrics)
-logging.info("Metrics: "+ str(list_metrics))
+# logging.info("Metrics: "+ str(list_metrics))
 
 list_tables = [table[0] for table in config.items('tables')]
-logging.info("Tables: " + str(list_tables))
+# logging.info("Tables: " + str(list_tables))
 list_renamed_metrics = [metric[1].replace('${tables}', table).lower()
                         for metric in config.items('renamed_metrics') for table in list_tables]
 logging.info("Renamed Metrics: " + str(list_renamed_metrics))
@@ -93,7 +93,7 @@ if str_is_master:
     tag = config['s3_metrics']['tag']
 
     #print("Pushing S3 Metrics: " + "Bucket name: " + bucket_name + " Prefix: " + prefix + "Tag: " + tag)
-    logging.info("Pushing S3 Metrics: " + "Bucket name: " + bucket_name + " Prefix: " + prefix + "Tag: " + tag)
+    # logging.info("Pushing S3 Metrics: " + "Bucket name: " + bucket_name + " Prefix: " + prefix + "Tag: " + tag)
 
     try:
         obj_s3_metrics = s3_metrics()
