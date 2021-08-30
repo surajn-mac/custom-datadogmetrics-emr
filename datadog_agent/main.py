@@ -82,12 +82,13 @@ for hostname in list_hostnames:
                                                                  dict_renamed_metric_tables)
 
     except Exception as e:
-        logging.info("Exception in fetching or pushing metrics: " + str(e))
+        logging.info("Exception in fetching or pushing metrics for "+hostname+": " + str(e))
 
 # S3 metrics
 list_tables = list(config.items('tables'))
 list_tables = [i[0] for i in list_tables]
 # logging.info("Tables: "+ str(list_tables))
+logging.info("===== Fetch and push s3 metrics =====")
 
 if str_is_master:
     bucket_name = config['s3_metrics']['bucket']

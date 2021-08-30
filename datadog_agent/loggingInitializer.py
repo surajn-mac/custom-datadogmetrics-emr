@@ -11,7 +11,8 @@ class initialize_logger:
         # create console handler and set level to info
         handler = logging.StreamHandler()
         # handler.setLevel(logging.INFO)
-        log_file_format = "[%(levelname)s] - %(asctime)s - %(name)s - %(pathname)s:%(lineno)d : %(message)s"
+        # log_file_format = "[%(levelname)s] - %(asctime)s - %(name)s - %(pathname)s:%(lineno)d : %(message)s"
+        log_file_format = "[%(levelname)s] - %(asctime)s - %(name)s - %(pathname)s - %(module)s:%(funcName)s:%(lineno)d : %(message)s"
         formatter = logging.Formatter(log_file_format)
         handler.setFormatter(formatter)
         if not self.logger.hasHandlers():
