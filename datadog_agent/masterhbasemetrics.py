@@ -49,7 +49,7 @@ def get_aggregate_region_metrics(prefix, bean):
             region_metric_match = hbase_regionserver_table_region_stat_pattern.match(key)
             if region_metric_match:
                 namespace, table, region, metric = region_metric_match.groups()
-                logging.info("namespace: "+str(namespace)+" table: "+str(table)+" region: "+str(region)+" metric: "+str(metric))
+                # logging.info("namespace: "+str(namespace)+" table: "+str(table)+" region: "+str(region)+" metric: "+str(metric))
                 if (namespace, table, metric) not in table_stats:
                     table_stats[(namespace, table, metric)] = []
                 table_stats[(namespace, table, metric)].append(value)
@@ -67,7 +67,7 @@ def get_raw_region_metrics(prefix, bean):
             region_metric_match = hbase_regionserver_table_region_stat_pattern.match(key)
             if region_metric_match:
                 namespace, table, region, metric = region_metric_match.groups()
-                logging.info("namespace: "+str(namespace)+" table: "+str(table)+" region: "+str(region)+" metric: "+str(metric))
+                # logging.info("namespace: "+str(namespace)+" table: "+str(table)+" region: "+str(region)+" metric: "+str(metric))
                 yield gauge("{}.region.{}".format(prefix, metric), value, tags={
                     "namespace": namespace,
                     "table": table,
