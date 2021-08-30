@@ -6,7 +6,7 @@ class initialize_logger:
         self.output_dir = output_dir
 
         self.logger = logging.getLogger()
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(logging.INFO)
 
         # create console handler and set level to info
         handler = logging.StreamHandler()
