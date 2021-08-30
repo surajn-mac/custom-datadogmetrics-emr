@@ -1,7 +1,7 @@
 import logging
-from singleton_decorator import singleton
+#from singleton_decorator import singleton
 
-@singleton
+#@singleton
 class initialize_logger:
     def __init__(self, output_dir):
         self.output_dir = output_dir
