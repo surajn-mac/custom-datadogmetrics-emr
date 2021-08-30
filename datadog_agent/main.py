@@ -11,6 +11,7 @@ from loggingInitializer import *
 logging = initialize_logger("log")
 # check and set logging level
 parser = argparse.ArgumentParser()
+parser.add_argument('args', action='store', nargs='*', type=str, help='Arguments', metavar='args')
 parser.add_argument('-l', action='store', nargs='?', type=int, help='Logging Level', metavar='logging_level')
 logging_level = parser.parse_args().l
 try:
