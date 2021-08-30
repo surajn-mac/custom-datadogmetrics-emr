@@ -12,7 +12,7 @@ class initialize_logger:
         handler = logging.StreamHandler()
         # handler.setLevel(logging.INFO)
         # log_file_format = "[%(levelname)s] - %(asctime)s - %(name)s - %(pathname)s:%(lineno)d : %(message)s"
-        log_file_format = "[%(levelname)s] - %(asctime)s - %(name)s - %(pathname)s - %(module)s:%(funcName)s:%(lineno)d : %(message)s"
+        log_file_format = "[%(levelname)s] - %(asctime)s - %(name)s - %(pathname)s:%(lineno)d : %(message)s"
         formatter = logging.Formatter(log_file_format)
         handler.setFormatter(formatter)
         if not self.logger.hasHandlers():
@@ -20,6 +20,7 @@ class initialize_logger:
 
         # Custom Levels
         logging.addLevelName(15, "MORE INFO")
+        logging.addLevelName(13, "MUCH MORE INFO")
 
         # create error file handler and set level to error
         # handler = logging.FileHandler(os.path.join(output_dir, "error.log"), "w", encoding=None, delay="true")
@@ -46,6 +47,9 @@ class initialize_logger:
 
     def more_info(self, message):
         self.logger.log(15, message)
+
+    def much_more_info(self, message):
+        self.logger.log(13, message)
 
     def setLoggerLevel(self, level):
         self.logger.setLevel(level)
