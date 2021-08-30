@@ -36,7 +36,7 @@ class hbase_metrics:
             f.close()
 
     def fetch_and_push_metrics(self, hostname):
-        logging.info("===== fetch_and_push_metrics =====")
+        logging.info("===== fetch_and_push_metrics for " + hostname + " =====")
         for metric in fetch_metrics("http://" + str(hostname)):
             if str(metric['metric']).lower() in self.list_metrics:
                 # logging.info("Pushing METRIC:" + str(metric['metric']) + ": " + str(metric['value']))
@@ -44,7 +44,7 @@ class hbase_metrics:
                              ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()])
 
     def fetch_and_push_renamed_metrics(self, hostname, dict_renamed_metric_names, dict_renamed_metric_tables):
-        logging.info("===== fetch_and_push_renamed_metrics =====")
+        logging.info("===== fetch_and_push_renamed_metrics for " + hostname + " =====")
         for metric in fetch_metrics("http://" + str(hostname)):
             if str(metric['metric']).lower() in self.list_metrics:
                 logging.more_info("Pushing METRIC:" + str(metric['metric']) + " as "
