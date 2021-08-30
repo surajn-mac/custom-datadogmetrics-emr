@@ -31,7 +31,7 @@ def parse_hadoop_bean_name(hadoop_bean_name):
 
 
 def aggregate_region_metric_values(metric, values):
-    logging.info("metric: "+ metric)
+    # logging.info("metric: "+ metric)
     if re.match("(\w+)_(percentile|mean|median|max|min|99)", metric):
         return int(sum(values)) / int(len(values))
     elif re.match("(\w+)(Count|_num_ops|Size)", metric):
@@ -42,7 +42,7 @@ def aggregate_region_metric_values(metric, values):
 
 
 def get_aggregate_region_metrics(prefix, bean):
-    logging.info("===== get_aggregate_region_metrics =====")
+    # logging.info("===== get_aggregate_region_metrics =====")
     table_stats = {}
     for key, value in bean.items():
         if isinstance(value, int) or isinstance(value, float) or isinstance(value, str):
@@ -61,7 +61,7 @@ def get_aggregate_region_metrics(prefix, bean):
 
 
 def get_raw_region_metrics(prefix, bean):
-    logging.info("===== get_raw_region_metrics =====")
+    # logging.info("===== get_raw_region_metrics =====")
     for key, value in bean.items():
         if isinstance(value, int) or isinstance(value, float) or isinstance(value, str):
             region_metric_match = hbase_regionserver_table_region_stat_pattern.match(key)
@@ -76,7 +76,7 @@ def get_raw_region_metrics(prefix, bean):
 
 
 def get_metrics_from_bean(bean, aggregate_by_region):
-    logging.info("===== get_metrics_from_bean =====")
+    # logging.info("===== get_metrics_from_bean =====")
     if bean['name'].startswith("Hadoop:service"):
         hadoop_service, name, sub = parse_hadoop_bean_name(bean['name'])
         prefix = ".".join([s.lower() for s in [hadoop_service, name, sub] if s is not None])
@@ -102,7 +102,7 @@ def get_metrics_from_bean(bean, aggregate_by_region):
 
 
 def fetch_metrics(hbase_jmx_json_url, aggregate_by_region=False):
-    logging.info("===== fetch_metrics =====")
+    # logging.info("===== fetch_metrics =====")
     http = urllib3.PoolManager()
     response = http.request("GET", hbase_jmx_json_url + "/jmx")
     data = json.loads(response.data.decode('utf-8'))
