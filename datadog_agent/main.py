@@ -22,19 +22,19 @@ list_tables = [table[0] for table in config.items('tables')]
 # logging.info("Tables: " + str(list_tables))
 list_renamed_metrics = [metric[1].replace('${tables}', table).lower()
                         for metric in config.items('renamed_metrics') for table in list_tables]
-logging.info("Renamed Metrics: " + str(list_renamed_metrics))
+# logging.info("Renamed Metrics: " + str(list_renamed_metrics))
 dict_renamed_metric_names = {metric[1].replace('${tables}', table).lower():metric[0].lower()
                              for metric in config.items('renamed_metrics') for table in list_tables}
-logging.info("Renamed Metric Names: " + str(dict_renamed_metric_names))
+# logging.info("Renamed Metric Names: " + str(dict_renamed_metric_names))
 dict_renamed_metric_tables = {metric[1].replace('${tables}', table).lower():table
                              for metric in config.items('renamed_metrics') for table in list_tables}
-logging.info("Renamed Metric Tables: " + str(dict_renamed_metric_tables))
+# logging.info("Renamed Metric Tables: " + str(dict_renamed_metric_tables))
 
 list_hostnames = list(config.items('jmx_hostnames'))
 list_hostnames = [i[0] for i in list_hostnames]
 #print("Hostnames:")
 #print(list_hostnames)
-logging.info("Hostnames: "+ str(list_metrics))
+# logging.info("Hostnames: "+ str(list_metrics))
 
 str_is_master = identify_master_node()
 str_local_ip = get_local_ip()
@@ -85,7 +85,7 @@ list_tables = list(config.items('tables'))
 list_tables = [i[0] for i in list_tables]
 #print("Tables")
 #print(list_tables)
-logging.info("Tables: "+ str(list_tables))
+# logging.info("Tables: "+ str(list_tables))
 
 if str_is_master:
     bucket_name = config['s3_metrics']['bucket']
