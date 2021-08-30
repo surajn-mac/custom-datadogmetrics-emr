@@ -14,7 +14,11 @@ class initialize_logger:
         log_file_format = "[%(levelname)s] - %(asctime)s - %(name)s - %(pathname)s:%(lineno)d : %(message)s"
         formatter = logging.Formatter(log_file_format)
         handler.setFormatter(formatter)
-        self.logger.addHandler(handler)
+        if not self.logger.hasHandlers():
+            self.logger.addHandler(handler)
+
+        # Custom Levels
+        logging.addLevelName(15, "MORE INFO")
 
         # create error file handler and set level to error
         # handler = logging.FileHandler(os.path.join(output_dir, "error.log"), "w", encoding=None, delay="true")
@@ -38,3 +42,9 @@ class initialize_logger:
 
     def debug(self, message):
         self.logger.debug(message)
+
+    def more_info(self, message):
+        self.logger.log(15, message)
+
+    def setLoggerLevel(self, level):
+        self.logger.setLevel(level)

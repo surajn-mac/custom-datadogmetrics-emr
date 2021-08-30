@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import configparser
+import argparse
 
 from emrutils import *
 from hbasemetrics import *
@@ -8,44 +9,47 @@ from s3metrics import *
 from loggingInitializer import *
 
 logging = initialize_logger("log")
+# check and set logging level
+parser = argparse.ArgumentParser()
+parser.add_argument('-l', action='store', nargs='?', type=int, help='Logging Level', metavar='logging_level')
+logging_level = parser.parse_args().l
+try:
+    if logging_level:
+        logging.setLoggerLevel(logging_level)
+except Exception as exInvalidLoggingLevel:
+    pass
 
 config = configparser.ConfigParser(allow_no_value=True, delimiters=('='))
 config.read('config.ini')
 
 list_metrics = list(config.items('metrics'))
 list_metrics = [i[0] for i in list_metrics]
-#print("Metrics: ")
-#print(list_metrics)
-# logging.info("Metrics: "+ str(list_metrics))
+logging.more_info("Metrics: "+ str(list_metrics))
 
 list_tables = [table[0] for table in config.items('tables')]
-# logging.info("Tables: " + str(list_tables))
+# logging.more_info("Tables: " + str(list_tables))
 list_renamed_metrics = [metric[1].replace('${tables}', table).lower()
                         for metric in config.items('renamed_metrics') for table in list_tables]
-# logging.info("Renamed Metrics: " + str(list_renamed_metrics))
+# logging.more_info("Renamed Metrics: " + str(list_renamed_metrics))
 dict_renamed_metric_names = {metric[1].replace('${tables}', table).lower():metric[0].lower()
                              for metric in config.items('renamed_metrics') for table in list_tables}
-# logging.info("Renamed Metric Names: " + str(dict_renamed_metric_names))
+# logging.more_info("Renamed Metric Names: " + str(dict_renamed_metric_names))
 dict_renamed_metric_tables = {metric[1].replace('${tables}', table).lower():table
                              for metric in config.items('renamed_metrics') for table in list_tables}
-# logging.info("Renamed Metric Tables: " + str(dict_renamed_metric_tables))
+# logging.more_info("Renamed Metric Tables: " + str(dict_renamed_metric_tables))
 
 list_hostnames = list(config.items('jmx_hostnames'))
 list_hostnames = [i[0] for i in list_hostnames]
-#print("Hostnames:")
-#print(list_hostnames)
-# logging.info("Hostnames: "+ str(list_metrics))
+# logging.more_info("Hostnames: "+ str(list_metrics))
 
 str_is_master = identify_master_node()
 str_local_ip = get_local_ip()
 
-#print("Node is master node: " + str(str_is_master))
-#print("Local IP: " + str(str_local_ip))
 logging.info("Node is master node: " + str(str_is_master))
 logging.info("Local IP: " + str(str_local_ip))
 
-file_name = "/tmp/" + "list_of_metrics"
-create_file(file_name)
+# file_name = "/tmp/" + "list_of_metrics"
+# create_file(file_name)
 
 for hostname in list_hostnames:
     try:
@@ -57,7 +61,7 @@ for hostname in list_hostnames:
 
         hostname = str_local_ip + ":" + hostname.split(":")[1]
         #print("Hostname to be passed: " + hostname)
-        logging.info("Hostname to be passed: " + hostname)
+        logging.more_info("Hostname to be passed: " + hostname)
 
         obj_hbase_metrics = hbase_metrics(list_metrics)
         obj_hbase_metrics.initialize()
@@ -77,14 +81,11 @@ for hostname in list_hostnames:
                                                                  dict_renamed_metric_tables)
 
     except Exception as e:
-        #print("Exception in fetching or pushing metrics: " + str(e))
         logging.info("Exception in fetching or pushing metrics: " + str(e))
 
 # S3 metrics
 list_tables = list(config.items('tables'))
 list_tables = [i[0] for i in list_tables]
-#print("Tables")
-#print(list_tables)
 # logging.info("Tables: "+ str(list_tables))
 
 if str_is_master:
@@ -92,7 +93,6 @@ if str_is_master:
     prefix = config['s3_metrics']['prefix']
     tag = config['s3_metrics']['tag']
 
-    #print("Pushing S3 Metrics: " + "Bucket name: " + bucket_name + " Prefix: " + prefix + "Tag: " + tag)
     # logging.info("Pushing S3 Metrics: " + "Bucket name: " + bucket_name + " Prefix: " + prefix + "Tag: " + tag)
 
     try:
@@ -101,7 +101,6 @@ if str_is_master:
         obj_s3_metrics.connect()
         obj_s3_metrics.fetch_and_push_metrics(bucket_name, prefix, tag, list_tables)
     except Exception as e:
-        #print(str(e))
         logging.info("Error: "+ str(e))
 
 #
