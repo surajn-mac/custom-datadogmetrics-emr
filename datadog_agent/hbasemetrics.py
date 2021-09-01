@@ -26,12 +26,13 @@ class hbase_metrics:
         )
 
     def fetch_and_append_metrics(self, hostname, file_name):
-        logging.logger.info("===== fetch_and_append_metrics =====")
+        logging.logger.info("===== fetch_and_append_metrics for " + hostname + " =====")
 
         for metric in fetch_metrics("http://" + str(hostname)):
             #print("Printing METRIC:" + str(metric['metric']) + ": " + str(metric['value']))
-            # logging.info("Printing METRIC:" + str(metric['metric']) + ": " + str(metric['value']))
-            f = open(file_name, "a")
+            logging.logger.log(logging.MUCH_MORE_INFO, "Printing METRIC:" + str(metric['metric']) + ": "
+                               + str(metric['value']))
+            f = open(file_name, "w")
             f.write(str(metric['metric']) + "|" + str(hostname.split(":")[1]) + "\n")
             f.close()
 

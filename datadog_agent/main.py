@@ -49,7 +49,7 @@ str_local_ip = get_local_ip()
 logging.logger.info("Node is master node: " + str(str_is_master))
 logging.logger.info("Local IP: " + str(str_local_ip))
 
-# file_name = "/tmp/" + "list_of_metrics"
+file_name = "/tmp/" + "list_of_metrics"
 # create_file(file_name)
 
 for hostname in list_hostnames:
@@ -68,10 +68,10 @@ for hostname in list_hostnames:
         obj_hbase_metrics.initialize()
         obj_hbase_metrics.service_check()
 
-        # if str_is_master:
-        #     obj_hbase_metrics.fetch_and_append_metrics(hostname, file_name + "_master")
-        # else:
-        #     obj_hbase_metrics.fetch_and_append_metrics(hostname, file_name + "_region")
+        if str_is_master:
+            obj_hbase_metrics.fetch_and_append_metrics(hostname, file_name + "_master")
+        else:
+            obj_hbase_metrics.fetch_and_append_metrics(hostname, file_name + "_region")
 
         obj_hbase_metrics.fetch_and_push_metrics(hostname)
 
