@@ -68,10 +68,10 @@ for hostname in list_hostnames:
         obj_hbase_metrics.initialize()
         obj_hbase_metrics.service_check()
 
-        if str_is_master:
-            obj_hbase_metrics.fetch_and_append_metrics(hostname, file_name + "_master")
-        else:
-            obj_hbase_metrics.fetch_and_append_metrics(hostname, file_name + "_region")
+        # if str_is_master:
+        #     obj_hbase_metrics.fetch_and_append_metrics(hostname, file_name + "_master")
+        # else:
+        #     obj_hbase_metrics.fetch_and_append_metrics(hostname, file_name + "_region")
 
         obj_hbase_metrics.fetch_and_push_metrics(hostname)
 
