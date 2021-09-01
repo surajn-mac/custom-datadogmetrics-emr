@@ -1,8 +1,5 @@
 import logging
 
-MORE_INFO = 15
-MUCH_MORE_INFO = 13
-
 
 class initialize_logger:
     def __init__(self, output_dir):
@@ -22,8 +19,11 @@ class initialize_logger:
             self.logger.addHandler(handler)
 
         # Custom Levels
-        logging.addLevelName(MORE_INFO, "MORE INFO")
-        logging.addLevelName(MUCH_MORE_INFO, "MUCH MORE INFO")
+        self.MORE_INFO = 15
+        self.MUCH_MORE_INFO = 13
+
+        logging.addLevelName(self.MORE_INFO, "MORE INFO")
+        logging.addLevelName(self.MUCH_MORE_INFO, "MUCH MORE INFO")
 
         # create error file handler and set level to error
         # handler = logging.FileHandler(os.path.join(output_dir, "error.log"), "w", encoding=None, delay="true")
@@ -49,10 +49,10 @@ class initialize_logger:
         self.logger.debug(message)
 
     def more_info(self, message):
-        self.logger.log(MORE_INFO, message)
+        self.logger.log(self.MORE_INFO, message)
 
     def much_more_info(self, message):
-        self.logger.log(MUCH_MORE_INFO, message)
+        self.logger.log(self.MUCH_MORE_INFO, message)
 
     def setLoggerLevel(self, level):
         self.logger.setLevel(level)
