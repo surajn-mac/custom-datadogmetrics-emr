@@ -46,8 +46,8 @@ list_hostnames = [i[0] for i in list_hostnames]
 str_is_master = identify_master_node()
 str_local_ip = get_local_ip()
 
-logging.info("Node is master node: " + str(str_is_master))
-logging.info("Local IP: " + str(str_local_ip))
+logging.logger.info("Node is master node: " + str(str_is_master))
+logging.logger.info("Local IP: " + str(str_local_ip))
 
 # file_name = "/tmp/" + "list_of_metrics"
 # create_file(file_name)

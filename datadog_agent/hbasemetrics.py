@@ -26,7 +26,7 @@ class hbase_metrics:
         )
 
     def fetch_and_append_metrics(self, hostname, file_name):
-        logging.info("===== fetch_and_append_metrics =====")
+        logging.logger.info("===== fetch_and_append_metrics =====")
 
         for metric in fetch_metrics("http://" + str(hostname)):
             #print("Printing METRIC:" + str(metric['metric']) + ": " + str(metric['value']))
@@ -36,7 +36,7 @@ class hbase_metrics:
             f.close()
 
     def fetch_and_push_metrics(self, hostname):
-        logging.info("===== fetch_and_push_metrics for " + hostname + " =====")
+        logging.logger.info("===== fetch_and_push_metrics for " + hostname + " =====")
         for metric in fetch_metrics("http://" + str(hostname)):
             if str(metric['metric']).lower() in self.list_metrics:
                 logging.much_more_info("Pushing METRIC:" + str(metric['metric']) + ": " + str(metric['value']))
@@ -44,10 +44,10 @@ class hbase_metrics:
                              ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()])
 
     def fetch_and_push_renamed_metrics(self, hostname, dict_renamed_metric_names, dict_renamed_metric_tables):
-        logging.info("===== fetch_and_push_renamed_metrics for " + hostname + " =====")
+        logging.logger.info("===== fetch_and_push_renamed_metrics for " + hostname + " =====")
         for metric in fetch_metrics("http://" + str(hostname)):
             if str(metric['metric']).lower() in self.list_metrics:
-                logging.much_more_info("Pushing METRIC:" + str(metric['metric']) + " as "
+                logging.logger.log(logging.MUCH_MORE_INFO, "Pushing METRIC:" + str(metric['metric']) + " as "
                              + dict_renamed_metric_names[str(metric['metric']).lower()] + ": " + str(metric['value']))
                 statsd.gauge(dict_renamed_metric_names[str(metric['metric']).lower()], metric['value'],
                              ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()]
