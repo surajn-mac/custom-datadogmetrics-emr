@@ -13,7 +13,9 @@ logging = initialize_logger("log")
 parser = argparse.ArgumentParser()
 parser.add_argument('args', action='store', nargs='*', type=str, help='Arguments', metavar='args')
 parser.add_argument('-l', action='store', nargs='?', type=int, help='Logging Level', metavar='logging_level')
+parser.add_argument('-t', action='store', nargs='+', type=str, help='Table Names', metavar='table_names')
 logging_level = parser.parse_args().l
+table_names = parser.parse_args().t
 try:
     if logging_level:
         logging.setLoggerLevel(logging_level)
@@ -25,26 +27,35 @@ config.read('config.ini')
 
 list_metrics = list(config.items('metrics'))
 list_metrics = [i[0] for i in list_metrics]
-# logging.info("Metrics: "+ str(list_metrics))
+logging.logger.log(logging.MUCH_MORE_INFO, "Metrics: " + str(list_metrics))
 
-list_tables = [table[0] for table in config.items('tables')]
-# logging.info("Tables: " + str(list_tables))
+if table_names:
+    list_tables = table_names
+else:
+    list_tables = [table[0] for table in config.items('tables')]
+logging.logger.log(logging.MUCH_MORE_INFO, "Tables: " + str(list_tables))
 list_renamed_metrics = [metric[1].replace('${tables}', table).lower()
                         for metric in config.items('renamed_metrics') for table in list_tables]
-# logging.info("Renamed Metrics: " + str(list_renamed_metrics))
+logging.logger.log(logging.MUCH_MORE_INFO, "Renamed Metrics: " + str(list_renamed_metrics))
 dict_renamed_metric_names = {metric[1].replace('${tables}', table).lower():metric[0].lower()
                              for metric in config.items('renamed_metrics') for table in list_tables}
-# logging.info("Renamed Metric Names: " + str(dict_renamed_metric_names))
+logging.logger.log(logging.MUCH_MORE_INFO, "Renamed Metric Names: " + str(dict_renamed_metric_names))
 dict_renamed_metric_tables = {metric[1].replace('${tables}', table).lower():table
                              for metric in config.items('renamed_metrics') for table in list_tables}
-# logging.info("Renamed Metric Tables: " + str(dict_renamed_metric_tables))
+logging.logger.log(logging.MUCH_MORE_INFO, "Renamed Metric Tables: " + str(dict_renamed_metric_tables))
 
-list_hostnames = list(config.items('jmx_hostnames'))
-list_hostnames = [i[0] for i in list_hostnames]
-# logging.info("Hostnames: "+ str(list_metrics))
+# list_hostnames = list(config.items('jmx_hostnames'))
+# list_hostnames = [i[0] for i in list_hostnames]
+# logging.logger.log(logging.MUCH_MORE_INFO, "Hostnames: " + str(list_hostnames))
 
 str_is_master = identify_master_node()
 str_local_ip = get_local_ip()
+
+if str_is_master:
+    list_hostnames = [hostname[0] for hostname in config.items('jmx_hostnames_master')]
+else:
+    list_hostnames = [hostname[0] for hostname in config.items('jmx_hostnames_region')]
+logging.logger.log(logging.MUCH_MORE_INFO, "Hostnames: " + str(list_hostnames))
 
 logging.logger.info("Node is master node: " + str(str_is_master))
 logging.logger.info("Local IP: " + str(str_local_ip))
@@ -54,14 +65,13 @@ file_name = "/tmp/" + "list_of_metrics"
 
 for hostname in list_hostnames:
     try:
-        if "/" in hostname:
-            if str_is_master:
-                hostname = hostname.split(":")[0] + str(":16010")
-            else:
-                hostname = hostname.split(":")[0] + str(":16030")
+        # if "/" in hostname:
+        #     if str_is_master:
+        #         hostname = hostname.split(":")[0] + str(":16010")
+        #     else:
+        #         hostname = hostname.split(":")[0] + str(":16030")
 
         hostname = str_local_ip + ":" + hostname.split(":")[1]
-        #print("Hostname to be passed: " + hostname)
         # logging.info("Hostname to be passed: " + hostname)
 
         obj_hbase_metrics = hbase_metrics(list_metrics)
