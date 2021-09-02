@@ -40,7 +40,8 @@ class hbase_metrics:
         logging.logger.info("===== fetch_and_push_metrics for " + hostname + " =====")
         for metric in fetch_metrics("http://" + str(hostname)):
             if str(metric['metric']).lower() in self.list_metrics:
-                logging.much_more_info("Pushing METRIC:" + str(metric['metric']) + ": " + str(metric['value']))
+                logging.logger.log(logging.MUCH_MORE_INFO, "Pushing METRIC:" + str(metric['metric'])
+                                   + ": " + str(metric['value']))
                 statsd.gauge(metric['metric'], metric['value'],
                              ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()])
 
@@ -48,7 +49,7 @@ class hbase_metrics:
         logging.logger.info("===== fetch_and_push_renamed_metrics for " + hostname + " =====")
         for metric in fetch_metrics("http://" + str(hostname)):
             if str(metric['metric']).lower() in self.list_metrics:
-                logging.much_more_info("Pushing METRIC:" + str(metric['metric']) + " as "
+                logging.logger.log(logging.MUCH_MORE_INFO, "Pushing METRIC:" + str(metric['metric']) + " as "
                              + dict_renamed_metric_names[str(metric['metric']).lower()] + ": " + str(metric['value']))
                 statsd.gauge(dict_renamed_metric_names[str(metric['metric']).lower()], metric['value'],
                              ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()]
