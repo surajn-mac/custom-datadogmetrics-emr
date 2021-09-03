@@ -26,7 +26,7 @@ config = configparser.ConfigParser(allow_no_value=True, delimiters=('='))
 config.read('config.ini')
 
 list_metrics = list(config.items('metrics'))
-list_metrics = [i[0] for i in list_metrics]
+list_metrics = [i[0].lower() for i in list_metrics]
 logging.logger.log(logging.MUCH_MORE_INFO, "Metrics: " + str(list_metrics))
 
 if table_names:
