@@ -37,7 +37,7 @@ def ssh_and_update_cron(list_ips, cluster_id):
                             + '/usr/bin/python3 /efs/users/datadog_agent/main.py ' + cluster_id + ' / '
                             + '>> /var/log/datadog-custom-metrics/datadog-metrics.log 2>&1\\\" '
                             + '>  /etc/cron.d/datadog-metrics; '
-                            + 'cp /efs/users/datadog_agent/custom-logrotate-config /etc/logrotate.d/ \'"')
+                            + 'cp /efs/users/datadog_agent/custom-logrotate-config /etc/logrotate.d/; \'"')
         logging.info("SSH command " + ssh_cron_command)
         # Create a file with the command, and then try to execute the file
         f = open("ssh-configure-cron.sh", "w")
