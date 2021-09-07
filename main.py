@@ -30,7 +30,14 @@ def ssh_and_update_cron(list_ips, cluster_id):
         # ssh_cron_command = ' ssh ec2-user@172.30.138.8 "sudo bash -c \'ls / \' " '
         # ssh_cron_command = ' ssh ec2-user@' + i +' "sudo bash -c \'ifconfig \' " '
         # ssh_cron_command = 'ssh ec2-user@' + i + ' "sudo bash -c \'touch /etc/cron.d/datadog-metrics; echo \\\"* * * * * root cd /efs/users/datadog_agent/; /usr/bin/python3 /efs/users/datadog_agent/main.py ' + cluster_id + ' / >> /tmp/datadog-metrics.log 2>&1\\\" >  /etc/cron.d/datadog-metrics; \'"'
-        ssh_cron_command = 'ssh ec2-user@' + i + ' "sudo bash -c \'touch /etc/cron.d/datadog-metrics; mkdir -p /var/log/datadog-custom-metrics/; echo \\\"* * * * * root cd /efs/users/datadog_agent/; /usr/bin/python3 /efs/users/datadog_agent/main.py ' + cluster_id + ' / >> /var/log/datadog-custom-metrics/datadog-metrics.log 2>&1\\\" >  /etc/cron.d/datadog-metrics; \'"'
+        # ssh_cron_command = 'ssh ec2-user@' + i + ' "sudo bash -c \'touch /etc/cron.d/datadog-metrics; mkdir -p /var/log/datadog-custom-metrics/; echo \\\"* * * * * root cd /efs/users/datadog_agent/; /usr/bin/python3 /efs/users/datadog_agent/main.py ' + cluster_id + ' / >> /var/log/datadog-custom-metrics/datadog-metrics.log 2>&1\\\" >  /etc/cron.d/datadog-metrics; \'"'
+        ssh_cron_command = ('ssh ec2-user@' + i + ' "sudo bash -c \'touch /etc/cron.d/datadog-metrics; '
+                            + 'mkdir -p /var/log/datadog-custom-metrics/; '
+                            + 'echo \\\"* * * * * root cd /efs/users/datadog_agent/; '
+                            + '/usr/bin/python3 /efs/users/datadog_agent/main.py ' + cluster_id + ' / '
+                            + '>> /var/log/datadog-custom-metrics/datadog-metrics.log 2>&1\\\" '
+                            + '>  /etc/cron.d/datadog-metrics; '
+                            + 'cp /efs/users/datadog_agent/custom-logrotate-config /etc/logrotate.d/ \'"')
         logging.info("SSH command " + ssh_cron_command)
         # Create a file with the command, and then try to execute the file
         f = open("ssh-configure-cron.sh", "w")

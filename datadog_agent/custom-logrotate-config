@@ -1,0 +1,12 @@
+# see "man logrotate" for details
+
+/var/log/datadog-custom-metrics/datadog-metrics.log {
+    compress
+    create
+    dateext
+    extension .log
+    missingok
+    noolddir
+    rotate 30
+    size 100k
+}
