@@ -101,10 +101,9 @@ for hostname in list_hostnames:
                 metric_values = [value.split(',')[0] for value in metric['value'].replace(';', ' ').split()]
                 logging.logger.log(logging.MUCH_MORE_INFO, "Pushing METRIC:" + str(metric['metric']) + ": "
                                    + str(len(metric['value'].replace(';', ' ').split())) + ' ' + str(metric_values))
-                statsd.gauge(dict_renamed_metric_names[str(metric['metric']).lower()],
-                             len(metric['value'].replace(';', ' ').split()),
+                statsd.gauge(metric['metric'], len(metric['value'].replace(';', ' ').split()),
                              ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()]
-                             + ["flipboardemrprod"])
+                             + metric_values + ["flipboardemrprod"])
 
     except Exception as e:
         logging.info("Exception in fetching or pushing metrics for "+hostname+": " + str(e))
