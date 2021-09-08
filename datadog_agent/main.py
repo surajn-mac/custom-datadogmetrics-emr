@@ -97,9 +97,10 @@ for hostname in list_hostnames:
         # below code is added as a temporary measure for string metrics
         logging.logger.info("===== processing string metrics for " + hostname + " =====")
         for metric in fetch_metrics("http://" + str(hostname)):
-            if str(metric['metric']).lower() in self.string_metrics:
+            if str(metric['metric']).lower() in string_metrics:
                 logging.logger.log(logging.MUCH_MORE_INFO, "Pushing METRIC:" + str(metric['metric']) +
-                                   ": " + str(metric['value']))
+                                   ": " + str(len(metric['value'].replace(';', ' ').split())) + ' '
+                                   + str(["hostname:"+hostname.split(',')[0] for hostname in metric['value'].replace(';', ' ').split()]))
                 statsd.gauge(dict_renamed_metric_names[str(metric['metric']).lower()],
                              len(metric['value'].replace(';', ' ').split()),
                              ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()]
