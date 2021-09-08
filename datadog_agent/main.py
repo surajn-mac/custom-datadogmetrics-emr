@@ -104,7 +104,7 @@ for hostname in list_hostnames:
                 statsd.gauge(dict_renamed_metric_names[str(metric['metric']).lower()],
                              len(metric['value'].replace(';', ' ').split()),
                              ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()]
-                             + metric_values + ["flipboardemrprod"])
+                             + ["flipboardemrprod"])
 
     except Exception as e:
         logging.info("Exception in fetching or pushing metrics for "+hostname+": " + str(e))
