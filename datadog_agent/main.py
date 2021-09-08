@@ -29,6 +29,9 @@ list_metrics = list(config.items('metrics'))
 list_metrics = [i[0].lower() for i in list_metrics]
 logging.logger.log(logging.MUCH_MORE_INFO, "Metrics: " + str(list_metrics))
 
+string_metrics = [metric[0].lower() for metric in config.items('string_metrics')]
+logging.logger.log(logging.MUCH_MORE_INFO, "String Metrics: " + str(string_metrics))
+
 if table_names:
     list_tables = table_names
 else:
@@ -90,6 +93,18 @@ for hostname in list_hostnames:
         obj_hbase_renamed_metrics.service_check()
         obj_hbase_renamed_metrics.fetch_and_push_renamed_metrics(hostname, dict_renamed_metric_names,
                                                                  dict_renamed_metric_tables)
+
+        # below code is added as a temporary measure for string metrics
+        logging.logger.info("===== processing string metrics for " + hostname + " =====")
+        for metric in fetch_metrics("http://" + str(hostname)):
+            if str(metric['metric']).lower() in self.string_metrics:
+                logging.logger.log(logging.MUCH_MORE_INFO, "Pushing METRIC:" + str(metric['metric']) +
+                                   ": " + str(metric['value']))
+                statsd.gauge(dict_renamed_metric_names[str(metric['metric']).lower()],
+                             len(metric['value'].replace(';', ' ').split()),
+                             ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()]
+                             + ["hostname:"+hostname.split(',')[0] for hostname in metric['value'].replace(';', ' ').split()]
+                             + ["flipboardemrprod"])
 
     except Exception as e:
         logging.info("Exception in fetching or pushing metrics for "+hostname+": " + str(e))
