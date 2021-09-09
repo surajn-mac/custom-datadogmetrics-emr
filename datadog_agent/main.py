@@ -94,16 +94,15 @@ for hostname in list_hostnames:
         obj_hbase_renamed_metrics.fetch_and_push_renamed_metrics(hostname, dict_renamed_metric_names,
                                                                  dict_renamed_metric_tables)
 
-        # below code is added as a temporary measure for string metrics
+        # below code is added to process string metrics
         logging.logger.info("===== processing string metrics for " + hostname + " =====")
         for metric in fetch_metrics("http://" + str(hostname)):
             if str(metric['metric']).lower() in string_metrics:
-                metric_values = [value.split(',')[0] for value in metric['value'].replace(';', ' ').split()]
+                metric_values = ["rs_name:"+value.split(',')[0] for value in metric['value'].replace(';', ' ').split()]
                 logging.logger.log(logging.MUCH_MORE_INFO, "Pushing METRIC:" + str(metric['metric']) + ": "
                                    + str(len(metric['value'].replace(';', ' ').split())) + ' ' + str(metric_values))
                 statsd.gauge(metric['metric'], len(metric['value'].replace(';', ' ').split()),
-                             ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()]
-                             + metric_values + ["flipboardemrprod"])
+                             ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()] + metric_values)
 
     except Exception as e:
         logging.info("Exception in fetching or pushing metrics for "+hostname+": " + str(e))
