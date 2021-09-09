@@ -55,3 +55,13 @@ class hbase_metrics:
                              ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()]
                              + ["hbasetable:"+dict_renamed_metric_tables[str(metric['metric']).lower()]]
                              + ["flipboardemrprod"])
+
+    def fetch_and_push_string_metrics(self, hostname):
+        logging.logger.info("===== fetch_and_push_string_metrics for " + hostname + " =====")
+        for metric in fetch_metrics("http://" + str(hostname)):
+            if str(metric['metric']).lower() in self.list_metrics:
+                metric_values = ["rs_name:"+value.split(',')[0] for value in metric['value'].replace(';', ' ').split()]
+                logging.logger.log(logging.MUCH_MORE_INFO, "Pushing METRIC:" + str(metric['metric']) + ": "
+                                   + str(len(metric['value'].replace(';', ' ').split())) + ' ' + str(metric_values))
+                statsd.gauge(metric['metric'], len(metric['value'].replace(';', ' ').split()),
+                             ["{}:{}".format(k, v) for k, v in metric.get('tags', {}).items()] + metric_values)
